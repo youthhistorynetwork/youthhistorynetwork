@@ -51,24 +51,73 @@
           </div>
         </main>
         <footer class="text-center absolute-bottom">
-            <div class="container-fluid bg-light p-4 pb-0" id="footerForm">
-              <h6> <span id="prompt">Sign up to our Email List!</span>
-                <span class="form-outline col-auto">
-                    <button type="submit" class="btn btn-primary col-auto shadow-sm" onclick="thankYou()">Subscribe</button>
-                </span>
-              </h6>
-              
-            </div>
-            <div class="container-fluid p-2 pb-0" id="footerText" style="background-color: rgb(177, 176, 176);">
-              <p><span class="align-middle"><strong>Youth History Network 2020</strong></span></p> 
-            </div>
+          <div class="container-fluid bg-light p-4 pb-0" id="footerForm">
+            <h6> <span id="prompt">Sign up to our Email List!</span>
+              <span class="form-outline col-auto">
+                  <input type="text" id="userEmailField" placeholder="Your Email">
+                  <button id="subscribeBtn" type="submit" class="btn btn-primary col-auto shadow-sm" onclick="buttonClicked()">Subscribe</button>
+              </span>
+            </h6>
+            
+          </div>
+          <div class="container-fluid p-2 pb-0" id="footerText" style="background-color: rgb(177, 176, 176);">
+            <p><span class="align-middle"><strong>Youth History Network 2020</strong></span></p> 
+          </div>
+      </footer>
 
-        </footer>
+      <div id="mailAlert" class="alert alert-success fade">
+        <span id="mailAlertText">Mail sent successfully.</span>
+        <button href="#" type="button"class="close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
     </body>
+    <script src="https://smtpjs.com/v3/smtp.js">
+    </script>
     <script>
-       function thankYou(){
-              document.getElementById("prompt").innerHTML = "Thank you!";
-              window.open('mailto:youthhistorynetwork@gmail.com?subject=Email List&body=I would like to sign up for Youth History Network\'s email list, using this email address. Thank you!');
-            }
+       function buttonClicked(){
+        var email = document.getElementById("userEmailField").value;
+        if(validateEmail(email)){
+          sendEmail(email);
+          
+        }else{
+          document.getElementById("prompt").innerHTML = "Enter a Valid Email!";
+        }
+      }
+
+      function sendEmail(email) {
+        Email.send({
+        SecureToken: "788be6c3-9cba-497f-9a32-4d886aebec60",
+        To : 'receiver@gmail.com',
+        From : email,
+        Subject : "Test email",
+        Body : "I would like to sign up for the email list"
+      }).then(function(){
+        $('#mailAlertText').html('Mail Sent Successfully')
+        
+        if (!$('#mailAlert').hasClass('alert-success')){
+            $('#mailAlert').addClass('alert-success')
+        }
+          
+        if ($('#mailAlert').hasClass('alert-warning')){
+            $('#mailAlert').removeClass('alert-warning')
+        }
+
+        $('#mailAlert').addClass('show')        
+        }
+      );
+      }
+
+      function validateEmail(email) {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+      }
+      function thankYou(){
+        document.getElementById("prompt").innerHTML = "Thank you!";
+        document.getElementById("subsribeBtn").disabled = true;            
+      }
+      $('.close').click(function () {
+        $(this).parent().removeClass('show'); // hides alert with Bootstrap CSS3 implem
+      });
     </script>
 </html>
